@@ -22,9 +22,10 @@ class ProfileController extends Controller
     {
      $attr=new Earth();
 
+     $provinces = UsersLocations::getProvinces(); sort($provinces);
+     $poblacions  = UsersLocations::getPoblacion(); sort($poblacions);
 
-                
-        return view('user.profile', ['lang' => new LangClass(), 'earth' => (new Earth())->findOneByCode('ES')]);
+        return view('user.profile', compact("provinces","poblacions"),['lang' => new LangClass(), 'earth' => (new Earth())->findOneByCode('ES')]);
     }
     
     public function worker(Request $request){

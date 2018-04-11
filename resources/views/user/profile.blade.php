@@ -174,8 +174,8 @@
                          <div class="dropdown-list">
                              <button><span>@if(Auth::user()->location){{!is_null(old('provincia')) ? old('provincia') : Auth::user()->location->provincia}}@else{{old('provincia')}}@endif</span></button>
                              <ul class="add-scroll">
-                                 @foreach($earth->getStates()->sortBy('name')->toArray() as $states)
-                                 <li onclick="$('.profile_cites').hide();$('[state={{preg_replace('/[^A-Za-z0-9_]/', '', $states['name'])}}]').show()"><a href="#"> {{$states['name']}} </a></li>
+                                 @foreach($poblacions as $states)
+                                 <li onclick="alert('here');$('[state={{preg_replace('/[^A-Za-z0-9_]/', '', $states)}}]').show()"><a href="#"> {{$states}} </a></li>
                                  @endforeach                                 
                              </ul>
                          </div>
@@ -186,10 +186,8 @@
                          <div class="dropdown-list">
                              <button><span>@if(Auth::user()->location){{Auth::user()->location->city}}@else{{old('city')}}@endif</span></button>
                              <ul class="add-scroll">
-                                 @foreach($earth->getStates()->sortBy('name') as $states)
-                                    @foreach($states->getCities()->sortBy('name') as $city)
-                                    <li class="profile_cites" state="{{preg_replace('/[^A-Za-z0-9_]/', '', $states->name)}}"><a href="#"> {{$city['name']}} </a></li>
-                                    @endforeach
+                                 @foreach($provinces as $city)
+                                    <li class="profile_cites" state=""><a href="#"> {{$city}} </a></li>
                                  @endforeach
                              </ul>
                          </div>
