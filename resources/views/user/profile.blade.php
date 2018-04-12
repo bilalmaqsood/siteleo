@@ -175,7 +175,7 @@
                              <button><span>@if(Auth::user()->location){{!is_null(old('provincia')) ? old('provincia') : Auth::user()->location->provincia}}@else{{old('provincia')}}@endif</span></button>
                              <ul class="add-scroll">
                                  @foreach($poblacions as $states)
-                                 <li onclick="alert('here');$('[state={{preg_replace('/[^A-Za-z0-9_]/', '', $states)}}]').show()"><a href="#"> {{$states}} </a></li>
+                                 <li onclick="$('[state={{preg_replace('/[^A-Za-z0-9_]/', '', $states)}}]').show()"><a href="#"> {{$states}} </a></li>
                                  @endforeach                                 
                              </ul>
                          </div>

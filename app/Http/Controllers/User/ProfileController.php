@@ -22,8 +22,8 @@ class ProfileController extends Controller
     {
      $attr=new Earth();
 
-     $provinces = UsersLocations::getProvinces(); sort($provinces);
-     $poblacions  = UsersLocations::getPoblacion(); sort($poblacions);
+     $provinces = UsersLocations::getProvinces();
+     $poblacions  = UsersLocations::getPoblacion();
 
         return view('user.profile', compact("provinces","poblacions"),['lang' => new LangClass(), 'earth' => (new Earth())->findOneByCode('ES')]);
     }
