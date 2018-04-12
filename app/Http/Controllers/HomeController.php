@@ -32,6 +32,7 @@ class HomeController extends Controller
 
         //$citys = UsersLocations::orderBy('created_at', 'DESC')->distinct()->get()->toArray();
 
+        $poblacions  = UsersLocations::getPoblacion();
         $cities = [];
         $provinces = [];
         foreach (UsersLocations::orderBy('created_at', 'DESC')->get() as $c){
@@ -49,7 +50,7 @@ class HomeController extends Controller
             'category' => new Category(),
             'cities' => $cities,
             'provinces' => $provinces,
-            'earth' => (new Earth())->findOneByCode('ES'),
+            'poblacions' => $poblacions,
             'category_count' => $this->calculateAdsCategory()
         ]);
     }

@@ -133,16 +133,15 @@
         				<h6>{{trans('main.search_map')}}</h6>
         				<h5>{{trans('main.find_professionals_near_you')}}</h5>
         				<div class="map-item-block">
-
-
-							@foreach($earth->getStates()->sortBy('name') as $states)
-								<div class="map-item" state="{{preg_replace('/[^A-Za-z0-9_]/', '', $states->name)}}">
-									@if(isset($provinces[$states['name']]) && $provinces[$states['name']])<a href="{{route('search-q', ['provincia' => $states['name']])}}"> @endif
-										{{$states['name']}}
-										@if(isset($provinces[$states['name']]) && $provinces[$states['name']])
-											({{$provinces[$states['name']]}})
+							@foreach($poblacions as $states)
+								<div class="map-item" state="{{preg_replace('/[^A-Za-z0-9_]/', '', $states)}}">
+									@if(isset($provinces[$states]) && $provinces[$states])
+										<a href="{{route('search-q', ['provincia' => $states])}}"> @endif
+											{{$states}}
+										@if(isset($provinces[$states]) && $provinces[$states])
+												({{$provinces[$states]}})
 										@endif
-									@if(isset($provinces[$states['name']]) && $provinces[$states['name']])</a> @endif
+									@if(isset($provinces[$states]) && $provinces[$states])</a> @endif
 								</div>
 							@endforeach
         				</div>
