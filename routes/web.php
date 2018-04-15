@@ -18,6 +18,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/search/ajax', 'SearchController@ajax')->name('search-ajax');
     Route::get('/search/q/', 'SearchController@indexQ')->name('search-q');
     Route::get('/search/sResult/', 'SearchController@sResult')->name('search-s');
+    Route::get('/search/cResult/', 'SearchController@cResult')->name('search-c');
     Route::get('/search/{uri_category}/{uri_subcategory?}', 'SearchController@index')->name('search');
     Route::get('/faq', 'ConditionsController@index')->name('conditions');
     Route::get('/terms', 'TermsController@index')->name('terms');

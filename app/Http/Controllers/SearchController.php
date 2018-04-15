@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use function foo\func;
 use Illuminate\Http\Request;
 use App\Models\Ads;
 use App\Models\Category;
@@ -71,49 +72,52 @@ class SearchController extends Controller
 
       
 
-  if($request->category && is_numeric($request->category)) $ads->where('category', 'like', '%'.$request->category.'%');
+  if($request->category && is_numeric($request->category)) $ads->whereHas('category',function ($q) use($request) { $q->where("categories.id",$request->category); });
         $ads = $ads->orderBy('last_pay', 'desc')->get();
         $collection = collect($ads);
 
+//        dd($collection);
+        if(!empty($request->provincia))
+          $collection = $collection->filter(function($item, $key) use ($request){
+                $search_provincia = explode(' ', $request->provincia);
+                if(isset($item->user->location->provincia)){
+                   if(str_contains($item->user->location->provincia, $search_provincia)
+                       || $request->provincia=='Todas' || $request->provincia=='all'
+                       || !isset($request->provincia)){
+                        return true;
+                    }
+                }
+          });
 
-      $collection = $collection->filter(function($item, $key) use ($request){
-     	
-        	
-            $search_provincia = explode(' ', $request->provincia);
-            if(isset($item->user->location->provincia)){
-           if(str_contains($item->user->location->provincia, $search_provincia) || $request->provincia=='Todas' || $request->provincia=='all' || !isset($request->provincia) )
-         {
-            return true;
-          }
-       }
-      });
-   
 
-      
+        if(!empty($request->city))
      $collection = $collection->filter(function($item, $key) use ($request){
           $search_city = explode(' ', $request->city);
         if(isset($item->user->location->city)){
-          if(str_contains($item->user->location->city, $search_city) || $request->city=='all' || $request->city=='Todas' || !isset($request->city)){
+          if(str_contains($item->user->location->city, $search_city)
+              || $request->city=='all' || $request->city=='Todas'
+              || !isset($request->city)){
                  return true;
            }
         }
       });
 
-   $collection = $collection->filter(function($item, $key) use ($request){
-            $search = explode(' ', $request->q);
-             $str='';
- if(isset($item->user->location->city)) {
-        $str=$item->user->location->city;
-        }  
-        
-         if(isset($item->user->location->provincia)) {
-        $str=$str.' '.$item->user->location->provincia;
-        }  
-            
-           if(str_contains($item->name.' '.$item->uri.' '.$item->terms_service.' '.$item->description.' '.$item->user->location->city.' '.$item->user->location->provincia, $search) || empty($request->q) || !isset($request->q)){
-                 return true;
-            }
-    });
+        if(!empty($request->q))
+       $collection = $collection->filter(function($item, $key) use ($request){
+                $search = explode(' ', $request->q);
+                 $str='';
+                if(isset($item->user->location->city)) {
+                   $str=$item->user->location->city;
+                }
+
+                if(isset($item->user->location->provincia)) {
+                    $str=$str.' '.$item->user->location->provincia;
+                }
+
+               if(str_contains($item->name.' '.$item->uri.' '.$item->terms_service.' '.$item->description.' '.$item->user->location->city.' '.$item->user->location->provincia, $search) || empty($request->q) || !isset($request->q)){
+                     return true;
+                }
+        });
 
         $collection = $collection->groupBy('last_pay');
         $no_pay_ads = $collection->pop();
@@ -159,7 +163,7 @@ class SearchController extends Controller
 
     public function sResult(Request $request)
     {
-        if(!$request->val) return response(['error'], 500);
+//        if(!$request->val) return response([/'error'], 500);
 
         $result = [];
 
@@ -167,13 +171,17 @@ class SearchController extends Controller
 
         $collection = collect($ads)->filter(function($item, $key) use ($request){
             $search = $request->val;//explode(' ', $request->val);
-            $search_city = explode(' ', $request->city);
-            if(str_contains($item->user->location->city, $search_city) || $request->city=='Todas'){
-                if(str_contains($item->name.' '.$item->uri.' '.$item->terms_service.' '.$item->description, $search) || empty($request->val)){
+            $search_cat = explode(' ', $request->val);
+            $categories = "";
+            if($item->categories->count()) $categories = implode(" ",$item->categories->pluck("title")->toArray());
+                if(/*str_contains($item->name.' '.$item->uri.' '.$item->terms_service.' '.$item->description, $search_cat) ||*/
+                    str_contains($categories, $search_cat))
+                {
                     return true;
                 }
-            }
         });
+
+//        dd($collection);
 
         foreach ($collection->toArray() as $item) {
             if(is_array($item['category']) && isset($item['category'][1])){
@@ -185,10 +193,68 @@ class SearchController extends Controller
         $result = \App\ArrayClass::group($result, 'category');
         $result = array_map(function($item, $key) use ($categories, $request){
             return [
-                'url' => route('search-q', ['q' => $request->val, 'city' => $request->city, 'category' => $key]),
+                'url' => route('search', [$categories[$key]->uri]),
                 'text' => $categories[$key]->title.' ('.count($item).')'
             ];
         }, $result, array_keys($result));
+
+        //dd($result);
+
+        return response($result, (count($result) ? 200 : 404));
+    }
+
+    public function cResult(Request $request)
+    {
+        $result = [];
+
+        $ads = Ads::all();
+        $search_city = explode(' ', $request->city);
+//        dd($search_city);
+//        $ads = Ads::whereHas("user.location", function($q) use($request){
+//                  $q->where('name','LIKE',"% {$request->city} %")
+//                    ->orWhere("provincia",'LIKE',"% {$request->city} %");
+//        })->with("user.location")->get();
+
+        $result = [];
+
+        $collection = collect($ads)->filter(function($item, $key) use ($request,$search_city,$result){
+            if(!$item->user->location)
+                return false;
+            if(str_contains($item->user->location->city, $search_city) || str_contains($item->user->location->provincia, $search_city)){
+                return true;
+//                if(str_contains($item->name.' '.$item->uri.' '.$item->terms_service.' '.$item->description, $search_city)){
+//                    return true;
+//                }
+            }
+        });
+
+//        dd($result);
+//        dd($collection);
+//        $result = [];
+        foreach ($collection as $item) {
+
+            if(str_contains($item->user->location->provincia, $search_city)) {
+                $result[$item->user->location->provincia] = [
+                    'url' => route('search-q', ['provincia' => $item->user->location->provincia]),
+                    'text' => $item->user->location->provincia
+                ];
+            }
+
+            if(str_contains($item->user->location->city, $search_city) || str_contains($item->user->location->provincia, $search_city)) {
+                $result[$item->user->location->city]=[
+                    'url' => route('search-q', ['city' => $item->user->location->city]),
+                    'text' => $item->user->location->city
+                ];
+            }
+        }
+//        $categories = \App\ArrayClass::convert(\App\Models\Category::all());
+//        $result = \App\ArrayClass::group($result, 'category');
+//        $result = array_map(function($item, $key) use ($categories, $request){
+//            return [
+//                'url' => route('search-q', ['q' => $request->val, 'city' => $request->city, 'category' => $key]),
+//                'text' => $categories[$key]->title.' ('.count($item).')'
+//            ];
+//        }, $result, array_keys($result));
 
         //dd($result);
 

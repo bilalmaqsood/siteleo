@@ -12,28 +12,63 @@
         		<h3>que se desplazan a domicilio para ofrecer sus servicios</h3>
         		<form method="get" action="{{route('search-q')}}">
         			<div class="search-form">
-        				<div class="search-input">
-        					<input type="text" placeholder="ejemplo: abogado" name="q" autocomplete="off">
-        					<div class="smart-search" style="display: none;">
-        						<ul class="list-search">
+        				<div class="search-input suggestContainer" style="position:relative;">
+        					<input type="text" placeholder="ejemplo: abogado" name="q" id="q" autocomplete="off">
+							<div class="add-scroll" style="position:absolute; display: none;"></div>
 
-        						</ul>
-        					</div>
+							{{--<div class="smart-search" style="display: none;">--}}
+        						{{--<ul class="list-search">--}}
+
+        						{{--</ul>--}}
+        					{{--</div>--}}
 							@push('scripts')
+							<script>
+                                $(function(){$(".list-search").mCustomScrollbar();});
+                                $("#q").on('keyup', function(){
+                                    var qObj = $(this);
+                                    var qText = qObj.val();
+                                    var lObj = qObj.parent().find('div');
+//									    console.log(lObj);
+                                    var uObj = lObj.find('#mCSB_1_container');
+                                    if(qText.length){
+                                        $.get('{{route('search-s')}}', {val:qText, city:$('#search_city').val()}, function(data){
+                                            uObj.html('');
+                                            data.forEach(function callback(currentValue, index, array) {
+                                                uObj.append('<li><a href="'+currentValue.url+'">'+currentValue.text+'</a></li>');
+                                            });
+                                            lObj.slideDown();
+                                        }).fail(function(){
+                                            lObj.slideUp();
+                                            uObj.html('');
+                                        });
+                                    }else{
+                                        lObj.slideUp();
+                                        uObj.html('');
+                                    }
+                                });
+							</script>
 								<script>
 									$(function(){$(".list-search").mCustomScrollbar();});
 									$("#search_city").on('keyup', function(){
 									    var qObj = $(this);
 									    var qText = qObj.val();
 									    var lObj = qObj.parent().find('div');
-									    console.log(lObj);
-									    var uObj = lObj.find('ul').find('#mCSB_1_container');
-									    if(qText.length >= 3){
-									        $.get('{{route('search-s')}}', {val:qText, city:$('#search_city').val()}, function(data){
+//									    console.log(lObj);
+									    var uObj = lObj.find('#mCSB_2_container');
+									    if(qText.length){
+									        $.get('{{route('search-c')}}',
+												{val: $("#q").val(), city:$('#search_city').val()},
+												function(data){
+
                                                 uObj.html('');
-                                                data.forEach(function callback(currentValue, index, array) {
-                                                    uObj.append('<li><a href="'+currentValue.url+'">'+currentValue.text+'</a></li>');
-                                                });
+                                                    $.each(data,function(index,val) {
+                                                        console.log(index);
+                                                        uObj.append('<li><a href="'+val.url+'">'+val.text+'</a></li>');
+                                                    });
+
+//                                                data.forEach(function callback(currentValue, index, array) {
+//                                                    uObj.append('<li><a href="'+currentValue.url+'">'+currentValue.text+'</a></li>');
+//                                                });
                                                 lObj.slideDown();
 											}).fail(function(){
                                                 lObj.slideUp();
@@ -47,17 +82,13 @@
 								</script>
 							@endpush
         				</div>
-        				<div class="item-filter suggestContainer">
+        				<div class="item-filter suggestContainer" style="position: relative">
                             <input type="text" value="" id="search_city" name="city" placeholder="ejemplo: Madrid">
-                          <!--  <div class="dropdown-list">
-                                <button><span>Provincia</span></button>
-                                <ul>
-									<li><a href="#">Todas</a></li>
-									@foreach($cities as $key => $city)
-                                    <li><a href="#">{{$key}}</a></li>
-                                    @endforeach
-                                </ul>
-                            </div>-->
+                           {{--<div class="dropdown-list">--}}
+                                {{--<ul class="">--}}
+									<div class="add-scroll" style="position:absolute; display: none;"></div>
+                                {{--</ul>--}}
+                            {{--</div>--}}
                         </div>
                         <button class="send">{{trans('main.buscar')}}</button>
         			</div>
