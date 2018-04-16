@@ -34,7 +34,12 @@
                                         $.get('{{route('search-s')}}', {val:qText, city:$('#search_city').val()}, function(data){
                                             uObj.html('');
                                             data.forEach(function callback(currentValue, index, array) {
-                                                uObj.append('<li><a href="'+currentValue.url+'">'+currentValue.text+'</a></li>');
+                                                var regex = new RegExp(qText, 'gi')
+                                                 response = currentValue.text.replace(regex, function(str) {
+                                                    return "<b>" + str + "</b>"
+                                                })
+
+                                                uObj.append('<li><a href="'+currentValue.url+'">'+response+'</a></li>');
                                             });
                                             lObj.slideDown();
                                         }).fail(function(){
@@ -62,8 +67,11 @@
 
                                                 uObj.html('');
                                                     $.each(data,function(index,val) {
-                                                        console.log(index);
-                                                        uObj.append('<li><a href="'+val.url+'">'+val.text+'</a></li>');
+                                                        var regex = new RegExp($('#search_city').val(), 'gi');
+                                                        response = val.text.replace(regex, function(str) {
+                                                            return "<b>" + str + "</b>"
+                                                        })
+                                                        uObj.append('<li><a href="'+val.url+'">'+response+'</a></li>');
                                                     });
 
 //                                                data.forEach(function callback(currentValue, index, array) {
