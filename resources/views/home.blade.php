@@ -12,7 +12,7 @@
         		<h3>que se desplazan a domicilio para ofrecer sus servicios</h3>
         		<form method="get" action="{{route('search-q')}}">
         			<div class="search-form">
-        				<div class="search-input suggestContainer" style="position:relative;">
+        				<div class="item-filter suggestContainer" style="position:relative;">
         					<input type="text" placeholder="ejemplo: abogado" name="q" id="q" autocomplete="off">
 							<div class="add-scroll" style="position:absolute; display: none;"></div>
 

@@ -208,7 +208,7 @@ class SearchController extends Controller
         $result = [];
 
         $ads = Ads::all();
-        $search_city = explode(' ', $request->city);
+        $search_city = explode(' ', strtolower($request->city));
 //        dd($search_city);
 //        $ads = Ads::whereHas("user.location", function($q) use($request){
 //                  $q->where('name','LIKE',"% {$request->city} %")
@@ -220,7 +220,7 @@ class SearchController extends Controller
         $collection = collect($ads)->filter(function($item, $key) use ($request,$search_city,$result){
             if(!$item->user->location)
                 return false;
-            if(str_contains($item->user->location->city, $search_city) || str_contains($item->user->location->provincia, $search_city)){
+            if(str_contains(strtolower($item->user->location->city), $search_city) || str_contains(strtolower($item->user->location->provincia), $search_city)){
                 return true;
 //                if(str_contains($item->name.' '.$item->uri.' '.$item->terms_service.' '.$item->description, $search_city)){
 //                    return true;
@@ -233,14 +233,12 @@ class SearchController extends Controller
 //        $result = [];
         foreach ($collection as $item) {
 
-            if(str_contains($item->user->location->provincia, $search_city)) {
+            if(str_contains(strtolower($item->user->location->provincia), $search_city)) {
                 $result[$item->user->location->provincia] = [
                     'url' => route('search-q', ['provincia' => $item->user->location->provincia]),
                     'text' => $item->user->location->provincia
                 ];
-            }
-
-            if(str_contains($item->user->location->city, $search_city) || str_contains($item->user->location->provincia, $search_city)) {
+            } else if(str_contains(strtolower($item->user->location->city), $search_city) || str_contains(strtolower($item->user->location->provincia), $search_city)) {
                 $result[$item->user->location->city]=[
                     'url' => route('search-q', ['city' => $item->user->location->city]),
                     'text' => $item->user->location->city
