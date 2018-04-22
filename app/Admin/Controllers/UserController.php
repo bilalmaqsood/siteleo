@@ -181,4 +181,24 @@ class UserController extends Controller
             });
         });
     }
+
+    public function destroy($id)
+    {
+        \DB::statement('SET FOREIGN_KEY_CHECKS=0');
+        $status = $this->form()->destroy($id);
+        \DB::statement('SET FOREIGN_KEY_CHECKS=1');
+
+        if ($status) {
+
+            return response()->json([
+                'status'  => true,
+                'message' => trans('admin.delete_succeeded'),
+            ]);
+        } else {
+            return response()->json([
+                'status'  => false,
+                'message' => trans('admin.delete_failed'),
+            ]);
+        }
+    }
 }

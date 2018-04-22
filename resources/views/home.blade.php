@@ -33,14 +33,28 @@
                                     if(qText.length){
                                         $.get('{{route('search-s')}}', {val:qText, city:$('#search_city').val()}, function(data){
                                             uObj.html('');
-                                            data.forEach(function callback(currentValue, index, array) {
+
+
+                                            $.each(data,function(index,currentValue) {
                                                 var regex = new RegExp(qText, 'gi')
-                                                 response = currentValue.text.replace(regex, function(str) {
+                                                response = currentValue.text.replace(regex, function(str) {
                                                     return "<b>" + str + "</b>"
                                                 })
 
                                                 uObj.append('<li><a href="'+currentValue.url+'">'+response+'</a></li>');
                                             });
+
+
+
+//                                            data.forEach(function callback(currentValue, index, array) {
+//                                                var regex = new RegExp(qText, 'gi')
+//                                                 response = currentValue.text.replace(regex, function(str) {
+//                                                    return "<b>" + str + "</b>"
+//                                                })
+//
+//                                                uObj.append('<li><a href="'+currentValue.url+'">'+response+'</a></li>');
+//                                            });
+
                                             lObj.slideDown();
                                         }).fail(function(){
                                             lObj.slideUp();
