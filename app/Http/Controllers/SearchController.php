@@ -149,9 +149,14 @@ class SearchController extends Controller
         $cities = [];
         foreach (UsersLocations::orderBy('created_at', 'DESC')->get() as $c){
             $ads = [];
-            foreach ($c->user->ads as $ad){ if($ad->activ) $ads[] = $ad; }
+            if(isset($c->user->ads)) {
+                foreach ($c->user->ads as $ad) {
+                    if ($ad->activ) $ads[] = $ad;
+                }
+            }
             $count = count($ads);
             if($count) $cities[$c->city] = isset($cities[$c->city]) ? $cities[$c->city]+$count : $count;
+
         }
 
         return view('search', [

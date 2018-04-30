@@ -36,12 +36,16 @@ class HomeController extends Controller
         $cities = [];
         $provinces = [];
         foreach (UsersLocations::orderBy('created_at', 'DESC')->get() as $c){
+
+            $count = null;
+
+            if(isset($c->user->ads))
             $count = count($c->user->ads);
 
             if($count){ 
-	     $cities[$c->city] = isset($cities[$c->city]) ? $cities[$c->city]+$count : $count;
-            $provinces[$c->provincia] = isset($provinces[$c->provincia]) ? $provinces[$c->provincia]+$count : $count;
-}
+	            $cities[$c->city] = isset($cities[$c->city]) ? $cities[$c->city]+$count : $count;
+                $provinces[$c->provincia] = isset($provinces[$c->provincia]) ? $provinces[$c->provincia]+$count : $count;
+            }
         }
 
 

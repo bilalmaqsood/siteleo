@@ -38,6 +38,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::group(['middleware' => 'auth'], function () {
         Route::post('/advertise/{id}/commentaries', 'AdertiseController@commentary')->name('advertise-commentary');
         Route::get('/advertise/like', 'AdertiseController@llike')->name('advertise-like');
+        Route::post('/advertise/likes', 'AdertiseController@storeLike')->name('advertise-like.store');
         Route::post('/advertise/{id}/chat', 'AdertiseController@chat')->name('advertise-chat');
 
         //Route::get('/live-updater', 'HomeController@liveUpdate')->name('live-update');

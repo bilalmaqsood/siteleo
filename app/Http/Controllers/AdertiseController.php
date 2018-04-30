@@ -82,6 +82,45 @@ class AdertiseController extends Controller
         $upd_ad->save();
     }
 
+    public function storeLike(Request $request)
+    {
+        $ad = Ads::where('id', $request->id)->first();
+
+
+
+        $ad = Ads::where('id', $request->id)->first();
+        if(is_null($ad)) return redirect()->route('home');
+
+        $favoriteTest = UsersFavorites::where('user_id', Auth::user()->id)->where('ads_id', $request->id)->first();
+        $upd_ad = Ads::find($request->id);
+
+        if($request->type=='add'){
+            $favorite = new UsersFavorites();
+            $favorite->user_id = Auth::user()->id;
+            $favorite->ads_id = $request->id;
+            $favorite->save();
+            $upd_ad->like = $upd_ad->like+1;
+        }
+
+        if($request->type=='del'){
+            $favoriteTest->delete();
+            $upd_ad->like = $upd_ad->like-1;
+        }
+
+//        if(!$favoriteTest){
+//            $favorite = new UsersFavorites();
+//            $favorite->user_id = Auth::user()->id;
+//            $favorite->ads_id = $request->id;
+//            $favorite->save();
+//            $upd_ad->like = $upd_ad->like+1;
+//        }else{
+//            $favoriteTest->delete();
+//            $upd_ad->like = $upd_ad->like-1;
+//        }
+
+        $upd_ad->save();
+    }
+
     public function chat(Request $request, $id){
         $ad = Ads::where('id', $id)->first();
         if(is_null($ad)) return view('errors.404');

@@ -45,7 +45,7 @@
                                 </a>--}}
 
 @if(isset(Auth::user()->id))
-                                <a href="#like" data-id="{{$ad->id}}" class="@if($like)like @endif">
+                                <a href="#likes" data-id="{{$ad->id}}" class="@if($like)like @endif">
                                     <i class="fa fa-heart" aria-hidden="true"></i>
                                     <span>{{$ad->like}}</span>
                                 </a>
@@ -250,6 +250,53 @@ echo $test;
 @push('scripts')
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyApmMWIVsXENuZA1DYjcDaE_-whpbPDasc&libraries=places"></script>
     <script type="text/javascript">
+
+        $(document).ready(function() {
+            $('[href="#likes"]').on('click', function () {
+                var type = null;
+                var obj = $(this);
+                var numLikes = Number(obj.find('span').html());
+                if (obj.hasClass("like")) {
+                    obj.removeClass('like');
+                    type = "del";
+                    //obj.find('i').removeClass('fa-heart').addClass('fa-heart-o');
+                    obj.find('span').html(numLikes - 1);
+                } else {
+                    $(this).clone().appendTo("body").addClass("cloned-like").css({
+                        left: $(this).offset().left,
+                        top: $(this).offset().top - $(".user .user-photo").offset().top
+                    }).animate({
+                        left: $(".user .user-photo").offset().left + 10,
+                        top: $(".user .user-photo").offset().top + 10
+                    }, function () {
+                        $(this).fadeOut().remove();
+                    });
+                    obj.addClass('like');
+                    //obj.find('i').removeClass('fa-heart-o').addClass('fa-heart');
+                    obj.find('span').html(numLikes + 1);
+                    type = "add";
+                }
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{{route("advertise-like.store")}}',
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    data: {id: $(this).data('id'), type: type},
+
+                    success: function (data) {
+
+                    },
+                    error: function (data) {
+                        alert("Opps! Some thing went wrong.");
+                    }
+                });
+
+                //$.post('{{route("advertise-like.store")}}', {id: $(this).data('id'), type: type});
+                return false;
+            });
+
+        });
+
        var grey = '#d0d4d9';
         var pm = '#fd4b4b';
         var am = '#ff6d2e';
