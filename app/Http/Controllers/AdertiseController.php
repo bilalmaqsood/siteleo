@@ -51,7 +51,7 @@ class AdertiseController extends Controller
                 $total_voices++;
             }
         }
-
+//        dd(\App\Models\AdsComments::active()->where('ads_id', $ad->id)->get());
         return view('advertise', [
             'ad' => $ad, 
             'cats_name' => $cats_name, 

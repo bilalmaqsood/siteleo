@@ -25,9 +25,9 @@
 				<script>
 					function livaeUpdate(){
 					    $.get('/live-upd', {}, function(data){
-					        $('#new_events').html(data.new_events);
-					        $('#chat_num').html(data.chat_num);
-					        $('#ad_num').html(data.ad_num);
+//					        $('#new_events').html(data.new_events);
+//					        $('#chat_num').html(data.chat_num);
+//					        $('#ad_num').html(data.ad_num);
 						});
 					}
 					$(function(){ setInterval(livaeUpdate, 200000); });
@@ -55,16 +55,16 @@ mensajes nuevos
 					@if(Auth::user()->role=='worker')
 					
 @if(count($chat_num)!=0)
-<div><a href="{{route('user-feedback')}}"><i class="fa fa-comment" aria-hidden="true"></i><span id="ad_num" >{{count($ad_num)}}</span> 
+<div><a href="{{route('user-feedback')}}"><i class="fa fa-comment" aria-hidden="true" style="margin-right: 10px;"></i><span id="ad_num" class="{{count($ad_num)==0?'hide hidden':''}}">{{count($ad_num)}}</span>
 @if(count($ad_num)==1)
 valoración nueva
 @else
-valoraciones nuevas
+No tienes valoraciones
 @endif
 
 </a></div>
 @else
-<div><a href="{{route('user-feedback')}}"><i class="fa fa-comment" aria-hidden="true"></i><span id="ad_num" style='display:none'></span>No tienes valoraciones</a></div>
+<div><a href="{{route('user-feedback')}}"><i class="fa fa-comment" aria-hidden="true" style="margin-right: 10px;"></i><span id="ad_num" style='display:none'></span>No tienes valoraciones</a></div>
 @endif
 					@endif
                 </div>

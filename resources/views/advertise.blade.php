@@ -79,7 +79,7 @@
                                         <span class="fa @if($stars>=$i) fa-star @else fa-star-o @endif" aria-hidden="true"></span>
                                     @endfor
                                 </div>
-                                <div class="class1-rewievs-count">{{trans('main.reviews')}}: <span>{{count(\App\Models\AdsComments::where('ads_id', $ad->id)->active()->get())}}</span></div>
+                                <div class="class1-rewievs-count">{{trans('main.reviews')}}: <span>{{count(\App\Models\AdsComments::where('ads_id', $ad->id)->where("parent_id","<=",0)->active()->get())}}</span></div>
                             </div>
                         </div>
                         <div class="user-description">           

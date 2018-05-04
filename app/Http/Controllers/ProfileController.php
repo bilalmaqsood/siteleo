@@ -23,7 +23,7 @@ class ProfileController extends Controller
         $total_voices = 0;
         $coments = 0;
         //dd($user->ads);
-
+        $abc = array();
         foreach ($user->ads as $ad) {
             foreach ($ad->comments as $comment) {
                 if(!$comment->parent_id){
@@ -31,9 +31,11 @@ class ProfileController extends Controller
                     $total_voices++;
                 }
             }
-            $coments += count($ad->comments);
+//            array_push($abc,$ad->comments->toArray());
+//            dd($ad->comments->where("ads_user","!=",auth()->user()->id));
+            $coments += count($ad->comments->where("parent_id","<=",0));
         }
-
+//        dd($abc);
         $lang = new LangClass();
 
         $week = [
