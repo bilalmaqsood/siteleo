@@ -70,7 +70,6 @@ No tienes valoraciones
                 </div>
 			</div>
 			<div class="user">
-				{{ Auth::user()->id }}
                             <div class="user-photo" style="background-image: url({{asset(Auth::user()->photo)}});"></div>
                             <div class="user-name"><a href="{{route('user')}}"> {{ Auth::user()->name }} </a></div>
                             <div class="user-hover">

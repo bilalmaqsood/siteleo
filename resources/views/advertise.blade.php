@@ -141,7 +141,8 @@
 
                                     <div class="user-clock-explanation">
                                         <h5>{{trans('main.disponibilidad_horaria')}}:</h5>
-                                        <p>{{trans('main.from')}} {{$ad->user->graphics->begining_work_day}} {{trans('main.to')}} {{$ad->user->graphics->end_working_day}}</p>
+                                        <p>{{trans('main.from')}} {{$ad->user->graphics?$ad->user->graphics->begining_work_day:''}}
+                                            {{trans('main.to')}} {{$ad->user->graphics?$ad->user->graphics->end_working_day:''}}</p>
                                         <h5>{{trans('main.dias_disponibles')}}:</h5>
                                         <p>{{implode(", ", $week_name)}}</p>
                                         <div class="user-clock-explanation-item">

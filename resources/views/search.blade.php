@@ -72,7 +72,8 @@
                     <!-- якщо проплачене оголошення додати клас paid -->
 
                     @foreach($ads as $ad)
-                    <div class="class1-item @if($ad->payable) paid @endif">
+                        @if(!empty($ad->user))
+                        <div class="class1-item @if($ad->payable) paid @endif">
                         <a href="{{route('advertise', ['uri' => $ad->uri])}}">
                             <div class="class1-header">
                                 <div class="class1-avatar"></div>
@@ -129,9 +130,10 @@
                                     </div>
                                     <div class="class1-rewievs-count">{{trans('main.reviews')}}: <span>{{count(\App\Models\AdsComments::where('ads_id', $ad->id)->active()->get())}}</span></div>
                                 </div>
-                            </div>         
+                            </div>
                         </a>                      
                     </div>
+                        @endif
                     @endforeach
                     @if(!count($ads))
                     <div class="empty-search">

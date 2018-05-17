@@ -15,7 +15,7 @@
                             <div class="profile-rewievs">
                                 <div class="rating">
                                     @for($i=1;$i<=10;$i=$i+2)
-                                        <span class="fa @if($stars>=$i) fa-star @else fa-star-o @endif" aria-hidden="true"></span>
+                                        <span class="fa @if($stars>$i) fa-star @else fa-star-o @endif" aria-hidden="true"></span>
                                     @endfor
                                 </div>
                                 <div class="profile-rewievs-count">{{trans('main.reviews')}}: <span>{{$coments}}</span></div>
@@ -223,20 +223,30 @@
                                                 $total_points = 0;
                                                 $total_voices = 0;
 
-                                                foreach ($ad->comments as $comment) {
+                                                foreach ($ad->comments()->active()->get() as $comment) {
                                                     if(!$comment->parent_id){
                                                         $total_points = $total_points+$comment->sumRating;
                                                         $total_voices++;
                                                     }
                                                 }
 
-                                                $stars = $total_points && $total_voices ? round($total_points/$total_voices) : '';
+                                                $stars = $total_points && $total_voices ? round($total_points/$total_voices) : 0;
                                             @endphp
-                                            <div class="rating">
-                                                @for($i=1;$i<=10;$i=$i+2)
-                                                    <span class="fa @if($stars>=$i) fa-star @else fa-star-o @endif" aria-hidden="true"></span>
-                                                @endfor
-                                            </div>
+
+                                                @if($stars)
+                                                    <div class="rating">
+                                                        @for($i=1;$i<=10;$i=$i+2)
+                                                            <span class="fa @if($stars>=$i) fa-star @else fa-star-o @endif" aria-hidden="true"></span>
+                                                        @endfor
+                                                    </div>
+                                                    @else
+                                                <div class="rating">
+                                                    @for($i=1;$i<=10;$i=$i+2)
+                                                    <span class="fa fa-star-o" aria-hidden="true"></span>
+                                                     @endfor
+                                                </div>
+                                                @endif
+
                                         </div>
                                     </div> 
                                 </a>                              

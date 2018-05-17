@@ -37,7 +37,9 @@ class AdertiseController extends Controller
             trans('main.sunday'),
         ];
 
-        $week_name = []; foreach ($ad->user->graphics->working_days as $day) $week_name[] = $week[$day];
+        $week_name = [];
+        if($ad->user->graphics)
+        foreach ($ad->user->graphics->working_days as $day) $week_name[] = $week[$day];
 
         $upd_ad = Ads::find($ad->id);
         $upd_ad->views = $upd_ad->views+1;

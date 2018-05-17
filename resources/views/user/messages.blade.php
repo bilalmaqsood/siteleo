@@ -15,10 +15,11 @@
             //dd($user->name);
         @endphp
 
+        @if(!empty($user))
         <div class="user-message-item" @if($room->new) style="background-color: #efefef;" @endif >
             <a href="{{route('user-chat', ['id' => $room->user_id])}}">
                 <div class="message-avatar">
-                    <div class="message-avatar-photo" style="background-image: url({{asset($user->photo)}})"></div>
+                    <div class="message-avatar-photo" style="background-image: url({{isset($user->photo)?asset($user->photo):''}})"></div>
                     <!-- виводити коли ofline -->
                     @if($user->isOnline()) <span class="online">{{trans('main.on_line')}}</span> @else <span class="offline">{{trans('main.off_line')}}</span> @endif
                 </div>
@@ -29,6 +30,7 @@
                 <div class="message-time">{{$room->updated_at}}</div>
             </a>
         </div>
+        @endif
     @endforeach
 @endif
 @endsection

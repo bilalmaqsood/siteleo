@@ -4,9 +4,10 @@
     $description = false;
     $rout = Route::currentRouteName();
     if($rout=='advertise' && isset($ad)){
+
         $title = $ad->seo_title;
-        $keywords = $ad->seo_keywords;
-        $description = $ad->seo_description;
+        $keywords = str_replace(" ",", ",$ad->description);
+        $description = $ad->description;
     }elseif($rout=='search'){
         if(isset($uri_category)){
             $category_seo = \App\Models\Category::where('uri', $uri_subcategory ? $uri_subcategory : $uri_category)->first();

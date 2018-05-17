@@ -2,6 +2,7 @@
 
 namespace App\Admin\Controllers;
 
+use App\Models\Ads;
 use App\User;
 
 use Encore\Admin\Form;
@@ -186,6 +187,7 @@ class UserController extends Controller
     {
         \DB::statement('SET FOREIGN_KEY_CHECKS=0');
         $status = $this->form()->destroy($id);
+        Ads::where('user_id',$id)->delete();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1');
 
         if ($status) {
